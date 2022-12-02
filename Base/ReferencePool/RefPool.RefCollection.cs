@@ -3,94 +3,76 @@ using System.Collections.Generic;
 
 namespace GF
 {
-    public  static partial class RefPool
+    public static partial class RefPool
     {
+        /// <summary>
+        /// 引用集合
+        /// </summary>
         private sealed class RefCollection
         {
-             private readonly Queue<IRef> _references;
+            private readonly Queue<IRef> _references;
             private readonly Type _referenceType;
-            private int m_UsingReferenceCount;
-            private int m_AcquireReferenceCount;
-            private int m_ReleaseReferenceCount;
-            private int m_AddReferenceCount;
-            private int m_RemoveReferenceCount;
+            private int _usingReferenceCount;
+            private int _acquireReferenceCount;
+            private int _releaseReferenceCount;
+            private int _addReferenceCount;
+            private int _removeReferenceCount;
 
             public RefCollection(Type referenceType)
             {
                 _references = new Queue<IRef>();
                 _referenceType = referenceType;
-                m_UsingReferenceCount = 0;
-                m_AcquireReferenceCount = 0;
-                m_ReleaseReferenceCount = 0;
-                m_AddReferenceCount = 0;
-                m_RemoveReferenceCount = 0;
+                _usingReferenceCount = 0;
+                _acquireReferenceCount = 0;
+                _releaseReferenceCount = 0;
+                _addReferenceCount = 0;
+                _removeReferenceCount = 0;
             }
 
             public Type ReferenceType
             {
-                get
-                {
-                    return _referenceType;
-                }
+                get { return _referenceType; }
             }
 
             public int UnusedReferenceCount
             {
-                get
-                {
-                    return _references.Count;
-                }
+                get { return _references.Count; }
             }
 
             public int UsingReferenceCount
             {
-                get
-                {
-                    return m_UsingReferenceCount;
-                }
+                get { return _usingReferenceCount; }
             }
 
             public int AcquireReferenceCount
             {
-                get
-                {
-                    return m_AcquireReferenceCount;
-                }
+                get { return _acquireReferenceCount; }
             }
 
             public int ReleaseReferenceCount
             {
-                get
-                {
-                    return m_ReleaseReferenceCount;
-                }
+                get { return _releaseReferenceCount; }
             }
 
             public int AddReferenceCount
             {
-                get
-                {
-                    return m_AddReferenceCount;
-                }
+                get { return _addReferenceCount; }
             }
 
             public int RemoveReferenceCount
             {
-                get
-                {
-                    return m_RemoveReferenceCount;
-                }
+                get { return _removeReferenceCount; }
             }
 
             public T Acquire<T>() where T : class, IRef, new()
             {
                 if (typeof(T) != _referenceType)
                 {
-                    throw new GameFrameworkException("Type is invalid.");
+                    throw new GFException("Type is invalid.");
                 }
 
-                m_UsingReferenceCount++;
-                m_AcquireReferenceCount++;
+                _usingReferenceCount++;
+                _acquireReferenceCount++;
                 lock (_references)
                 {
                     if (_references.Count > 0)
@@ -99,14 +81,14 @@ namespace GF
                     }
                 }
 
-                m_AddReferenceCount++;
+                _addReferenceCount++;
                 return new T();
             }
 
             public IRef Acquire()
             {
-                m_UsingReferenceCount++;
-                m_AcquireReferenceCount++;
+                _usingReferenceCount++;
+                _acquireReferenceCount++;
                 lock (_references)
                 {
                     if (_references.Count > 0)
@@ -115,7 +97,7 @@ namespace GF
                     }
                 }
 
-                m_AddReferenceCount++;
+                _addReferenceCount++;
                 return (IRef)Activator.CreateInstance(_referenceType);
             }
 
@@ -124,28 +106,28 @@ namespace GF
                 reference.Clear();
                 lock (_references)
                 {
-                    if (m_EnableStrictCheck && _references.Contains(reference))
+                    if (_enableStrictCheck && _references.Contains(reference))
                     {
-                        throw new GameFrameworkException("The reference has been released.");
+                        throw new GFException("The reference has been released.");
                     }
 
                     _references.Enqueue(reference);
                 }
 
-                m_ReleaseReferenceCount++;
-                m_UsingReferenceCount--;
+                _releaseReferenceCount++;
+                _usingReferenceCount--;
             }
 
             public void Add<T>(int count) where T : class, IRef, new()
             {
                 if (typeof(T) != _referenceType)
                 {
-                    throw new GameFrameworkException("Type is invalid.");
+                    throw new GFException("Type is invalid.");
                 }
 
                 lock (_references)
                 {
-                    m_AddReferenceCount += count;
+                    _addReferenceCount += count;
                     while (count-- > 0)
                     {
                         _references.Enqueue(new T());
@@ -157,7 +139,7 @@ namespace GF
             {
                 lock (_references)
                 {
-                    m_AddReferenceCount += count;
+                    _addReferenceCount += count;
                     while (count-- > 0)
                     {
                         _references.Enqueue((IRef)Activator.CreateInstance(_referenceType));
@@ -174,7 +156,7 @@ namespace GF
                         count = _references.Count;
                     }
 
-                    m_RemoveReferenceCount += count;
+                    _removeReferenceCount += count;
                     while (count-- > 0)
                     {
                         _references.Dequeue();
@@ -186,11 +168,10 @@ namespace GF
             {
                 lock (_references)
                 {
-                    m_RemoveReferenceCount += _references.Count;
+                    _removeReferenceCount += _references.Count;
                     _references.Clear();
                 }
             }
-            
         }
     }
 }
