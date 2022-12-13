@@ -1,10 +1,10 @@
 using System;
 
-namespace GF
+namespace GFramework
 {
-    public abstract class GFEventArgs : EventArgs, IRef
+    public abstract class GFrameworkEventArgs : EventArgs, IRef
     {
-        public GFEventArgs()
+        public GFrameworkEventArgs()
         {
         }
 

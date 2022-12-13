@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GF
+namespace GFramework
 {
     public static partial class RefPool
     {
@@ -68,7 +68,7 @@ namespace GF
             {
                 if (typeof(T) != _referenceType)
                 {
-                    throw new GFException("Type is invalid.");
+                    throw new GFrameworkException("Type is invalid.");
                 }
 
                 _usingReferenceCount++;
@@ -108,7 +108,7 @@ namespace GF
                 {
                     if (_enableStrictCheck && _references.Contains(reference))
                     {
-                        throw new GFException("The reference has been released.");
+                        throw new GFrameworkException("The reference has been released.");
                     }
 
                     _references.Enqueue(reference);
@@ -122,7 +122,7 @@ namespace GF
             {
                 if (typeof(T) != _referenceType)
                 {
-                    throw new GFException("Type is invalid.");
+                    throw new GFrameworkException("Type is invalid.");
                 }
 
                 lock (_references)

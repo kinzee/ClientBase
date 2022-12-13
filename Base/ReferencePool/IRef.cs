@@ -1,4 +1,4 @@
-namespace GF
+namespace GFramework
 {
     /// <summary>
     /// 引用接口

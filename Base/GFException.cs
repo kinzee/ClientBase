@@ -1,26 +1,26 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace GF
+namespace GFramework
 {
-    public class GFException : Exception
+    public class GFrameworkException : Exception
     {
-        public GFException()
+        public GFrameworkException()
             : base()
         {
         }
 
-        public GFException(string message)
+        public GFrameworkException(string message)
             : base(message)
         {
         }
 
-        public GFException(string message, Exception innerException)
+        public GFrameworkException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        protected GFException(SerializationInfo info, StreamingContext context)
+        protected GFrameworkException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

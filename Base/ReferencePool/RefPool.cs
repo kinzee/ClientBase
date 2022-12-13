@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GF
+namespace GFramework
 {
     public static partial class RefPool
     {
@@ -47,7 +47,7 @@ namespace GF
         {
             if (reference == null)
             {
-                throw new GFException("Reference is invalid.");
+                throw new GFrameworkException("Reference is invalid.");
             }
 
             Type refType = reference.GetType();
@@ -97,17 +97,17 @@ namespace GF
 
             if (refType == null)
             {
-                throw new GFException("Reference type is invalid.");
+                throw new GFrameworkException("Reference type is invalid.");
             }
 
             if (!refType.IsClass || refType.IsAbstract)
             {
-                throw new GFException("Reference type is not a non-abstract class type.");
+                throw new GFrameworkException("Reference type is not a non-abstract class type.");
             }
 
             if (!typeof(IRef).IsAssignableFrom(refType))
             {
-                throw new GFException(string.Format("Reference type '{0}' is invalid.",
+                throw new GFrameworkException(string.Format("Reference type '{0}' is invalid.",
                     refType.FullName));
             }
         }
@@ -117,12 +117,12 @@ namespace GF
         /// </summary>
         /// <param name="refType">类型</param>
         /// <returns></returns>
-        /// <exception cref="GFException"></exception>
+        /// <exception cref="GFrameworkException"></exception>
         private static RefCollection GetRefCollection(Type refType)
         {
             if (refType == null)
             {
-                throw new GFException("ReferenceType is invalid.");
+                throw new GFrameworkException("ReferenceType is invalid.");
             }
 
             RefCollection refCollection = null;

@@ -1,4 +1,4 @@
-namespace GF
+namespace GFramework
 {
     public sealed partial class EventPool<T> where T : BaseEventArgs
     {

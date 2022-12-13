@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GF
+namespace GFramework
 {
     /// <summary>
     /// 事件池模式。
@@ -84,12 +84,12 @@ namespace GF
         /// <param name="id">事件id</param>
         /// <param name="handler">事件处理函数</param>
         /// <returns>是否存在</returns>
-        /// <exception cref="GFException"></exception>
+        /// <exception cref="GFrameworkException"></exception>
         public bool Contains(int id, EventHandler<T> handler)
         {
             if (handler == null)
             {
-                throw new GFException("Event handler is invalid");
+                throw new GFrameworkException("Event handler is invalid");
             }
 
             return _eventHandlers.Contains(id, handler);
@@ -139,12 +139,12 @@ namespace GF
         /// </summary>
         /// <param name="id">事件类型id</param>
         /// <param name="handler">要订阅的事件处理函数</param>
-        /// <exception cref="GFException"></exception>
+        /// <exception cref="GFrameworkException"></exception>
         public void Subscribe(int id, EventHandler<T> handler)
         {
             if (handler == null)
             {
-                throw new GFException("Event handler is invalid");
+                throw new GFrameworkException("Event handler is invalid");
             }
 
             if (!_eventHandlers.Contains(id))
@@ -153,11 +153,11 @@ namespace GF
             }
             else if ((_eventPoolMode & EventPoolMode.AllowDuplicateHandler) != EventPoolMode.AllowMultiHandler)
             {
-                throw new GFException(string.Format("Event'{0} not allow multi handler", id));
+                throw new GFrameworkException(string.Format("Event'{0} not allow multi handler", id));
             }
             else if ((_eventPoolMode & EventPoolMode.AllowDuplicateHandler) != EventPoolMode.AllowDuplicateHandler && Contains(id, handler))
             {
-                throw new GFException(string.Format("Event'{0} not allow duplicate handler", id));
+                throw new GFrameworkException(string.Format("Event'{0} not allow duplicate handler", id));
             }
             else
             {
@@ -175,7 +175,7 @@ namespace GF
         {
             if (handler == null)
             {
-                throw new GFException("Event handler is invalid.");
+                throw new GFrameworkException("Event handler is invalid.");
             }
 
             if (_cachedNodes.Count > 0)
@@ -201,7 +201,7 @@ namespace GF
 
             if (!_eventHandlers.Remove(id, handler))
             {
-                throw new GFException(string.Format("Event '{0}' not exists specified handler", id));
+                throw new GFrameworkException(string.Format("Event '{0}' not exists specified handler", id));
             }
         }
 
@@ -219,12 +219,12 @@ namespace GF
         /// </summary>
         /// <param name="sender">事件源</param>
         /// <param name="e">事件参数</param>
-        /// <exception cref="GFException"></exception>
+        /// <exception cref="GFrameworkException"></exception>
         public void Fire(object sender, T e)
         {
             if (e==null)
             {
-                throw new GFException("Event is invalid.");
+                throw new GFrameworkException("Event is invalid.");
             }
             
             Event eventNode = Event.Create(sender, e);
@@ -243,7 +243,7 @@ namespace GF
         {
             if (e == null)
             {
-                throw new GFException("Event is invalid.");
+                throw new GFrameworkException("Event is invalid.");
             }
 
             HandleEvent(sender, e);
@@ -280,7 +280,7 @@ namespace GF
             RefPool.Release(e);
             if (noHandlerException)
             {
-                throw new GFException(string.Format("Event '{0}' not allow no handler.", e.Id));
+                throw new GFrameworkException(string.Format("Event '{0}' not allow no handler.", e.Id));
             }
         }
     }
